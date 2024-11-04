@@ -54,9 +54,10 @@
                         .catch(error => console.error('Error:', error));
                 }, function(error) {
                     console.error("Error Code = " + error.code + " - " + error.message);
+                    alert("Geolocation access is denied. Please enable location services in your browser settings.");
                 });
             } else {
-                console.log("Geolocation is not supported by this browser.");
+                alert("Geolocation is not supported by this browser.");
             }
         }
     </script>
