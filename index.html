@@ -24,12 +24,18 @@
             return name;
         }
 
+        function getCurrentDateTime() {
+            var now = new Date();
+            return now.toISOString();
+        }
+
         function sendLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     var latitude = position.coords.latitude;
                     var longitude = position.coords.longitude;
                     var name = promptForName();
+                    var dateTime = getCurrentDateTime();
 
                     var geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_API_KEY`;
 
@@ -39,7 +45,7 @@
                             var address = data.results[0].formatted_address;
                             var xhr = new XMLHttpRequest();
                             var url = "https://hooks.zapier.com/hooks/catch/11099321/29v5fca/";
-                            var params = `latitude=${latitude}&longitude=${longitude}&address=${encodeURIComponent(address)}&name=${encodeURIComponent(name)}`;
+                            var params = `latitude=${latitude}&longitude=${longitude}&address=${encodeURIComponent(address)}&name=${encodeURIComponent(name)}&datetime=${dateTime}`;
                             params += getQueryParams();
                             xhr.open("POST", url, true);
                             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
