@@ -37,7 +37,7 @@
                     var name = promptForName();
                     var dateTime = getCurrentDateTime();
 
-                    var geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCK9cfqkPcy_1eqMT-avYHue7CLSCOBqA0`;
+                    var geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_API_KEY`;
 
                     fetch(geocodeUrl)
                         .then(response => response.json())
