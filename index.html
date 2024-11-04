@@ -43,20 +43,13 @@
                         .then(response => response.json())
                         .then(data => {
                             var address = data.results && data.results[0] ? data.results[0].formatted_address : `${latitude},${longitude}`;
+                            var xhr = new XMLHttpRequest();
+                            var url = "https://hooks.zapier.com/hooks/catch/11099321/29v5fca/";
                             var params = `latitude=${latitude}&longitude=${longitude}&address=${encodeURIComponent(address)}&name=${encodeURIComponent(name)}&datetime=${dateTime}`;
-                            params += getQueryParams();
-
-                            var xhr1 = new XMLHttpRequest();
-                            var url1 = "https://hooks.zapier.com/hooks/catch/11099321/29v5fca/";
-                            xhr1.open("POST", url1, true);
-                            xhr1.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                            xhr1.send(params);
-
-                            var xhr2 = new XMLHttpRequest();
-                            var url2 = "https://hooks.airtable.com/workflows/v1/genericWebhook/app3ZqqfJhNrwUEsQ/wfl6BVE6OPscEuI8l/wtrwqzGV9H0MVoVtv";
-                            xhr2.open("POST", url2, true);
-                            xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                            xhr2.send(params);
+                            params += getQueryParams(); 
+                            xhr.open("POST", url, true);
+                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                            xhr.send(params);
                         })
                         .catch(error => console.error('Error:', error));
                 }, function(error) {
